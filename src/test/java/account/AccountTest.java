@@ -8,8 +8,6 @@ import api.model.courier.DeleteCourierResponse;
 import core.BaseTest;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,30 +34,6 @@ public class AccountTest extends BaseTest {
     private String email;
     private String password;
 
-    @Before
-    public void setUp() {
-        courierApiClient = new CourierApiClient();
-        CreateCourierRequest createCourierRequest = getRandomCourier();
-        Response createResponse = courierApiClient.createCourier(createCourierRequest);
-        assertEquals(SC_OK, createResponse.statusCode());
-        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
-        assertTrue(createCourierResponse.getSuccess());
-        token = createCourierResponse.getAccessToken();
-
-        email = createCourierRequest.getEmail();
-        password = createCourierRequest.getPassword();
-
-        deleteCourierRequest = new DeleteCourierRequest(email, password);
-    }
-
-    @After
-    public void down() {
-        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
-        assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
-        DeleteCourierResponse deleteCourierResponse = deleteResponse.as(DeleteCourierResponse.class);
-        assertTrue(deleteCourierResponse.getSuccess());
-    }
-
     public AccountTest(String url, String button) {
         this.url = url;
         this.button = button;
@@ -68,7 +42,7 @@ public class AccountTest extends BaseTest {
     @Parameterized.Parameters
     public static Object[][] getEnterAccount() {
         return new Object[][]{
-                {"https://stellarburgers.nomoreparties.site/", "Личный кабинет"},
+                {"https://stellarburgers.nomoreparties.site/", "Личный Кабинет"},
                 {"https://stellarburgers.nomoreparties.site/", "Войти в аккаунт"},
                 {"https://stellarburgers.nomoreparties.site/register", "Войти"},
                 {"https://stellarburgers.nomoreparties.site/forgot-password", "Войти"}
@@ -76,11 +50,23 @@ public class AccountTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Тестируем вход в личный кабинет")
+    @DisplayName("Тестируем авторизацию")
     public void accountAnyCheck() {
+        courierApiClient = new CourierApiClient();
+        CreateCourierRequest createCourierRequest = getRandomCourier();
+        Response createResponse = courierApiClient.createCourier(createCourierRequest);
+        assertEquals(SC_OK, createResponse.statusCode());
+        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
+        assertTrue(createCourierResponse.getSuccess());
+        token = createCourierResponse.getAccessToken();
+        email = createCourierRequest.getEmail();
+        password = createCourierRequest.getPassword();
+
         driver.get(url);
 
         driver.findElement(By.xpath(".//*[text()='" + button + "']")).click();
+
+        loginPage.enterButtonVisible();
 
         loginPage.clickEnterTitle();
 
@@ -89,6 +75,12 @@ public class AccountTest extends BaseTest {
         loginPage.clickEnterButton();
 
         assertTrue(mainPage.createOrderButtonVisible());
+
+        deleteCourierRequest = new DeleteCourierRequest(email, password);
+        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
+        assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
+        DeleteCourierResponse deleteCourierResponse = deleteResponse.as(DeleteCourierResponse.class);
+        assertTrue(deleteCourierResponse.getSuccess());
     }
 
 }

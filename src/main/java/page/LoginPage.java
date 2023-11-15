@@ -5,6 +5,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BasePage {
+    /**
+     *
+     * /login
+     *
+     */
     public LoginPage(WebDriver driver) {
         BasePage.driver = driver;
     }
@@ -27,6 +32,9 @@ public class LoginPage extends BasePage {
     public void clickEnterTitle(){
         driver.findElement(enterTitle).click();
     }
+    public boolean enterTitleVisible(){
+        return driver.findElement(enterTitle).isDisplayed();
+    }
     public void setEmail(String email) {
         driver.findElement(emailInput).clear();
         driver.findElement(emailInput).sendKeys(email);
@@ -37,7 +45,6 @@ public class LoginPage extends BasePage {
     }
 
     public boolean enterButtonVisible() {
-        // ждем 8 секунд, пока появится веб-элемент с нужным текстом
-        return driver.findElement(By.xpath(".//*[text()='Войти']")).isDisplayed();
+        return driver.findElement(enterTitle).isDisplayed();
     }
 }

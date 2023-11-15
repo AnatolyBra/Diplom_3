@@ -9,6 +9,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class RegisterPage extends BasePage {
+    /**
+     *
+     * /register
+     *
+     */
     public RegisterPage(WebDriver driver) {
         BasePage.driver = driver;
     }
@@ -44,17 +49,17 @@ public class RegisterPage extends BasePage {
     }
 
 
-    public void waitRegisterButton() {
+    public boolean waitRegisterButton() {
         // ждем 8 секунд, пока появится веб-элемент с нужным текстом
-        new WebDriverWait(driver, Duration.ofSeconds(8))
-                .until(ExpectedConditions.visibilityOfElementLocated(registerButton));
+        return driver.findElement(registerButton).isDisplayed();
+//                WebDriverWait(driver, Duration.ofSeconds(8))
+//                .until(ExpectedConditions.visibilityOfElementLocated(registerButton));
     }
 
-    public void assertInputText(String text) {
+    public boolean assertInputText(String text) {
         // ждем 8 секунд, пока появится веб-элемент с нужным текстом
-        new WebDriverWait(driver, Duration.ofSeconds(8))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//input[@value='" + text + "']")));
+return driver.findElement(By.xpath(".//input[@value='" + text + "']")).isDisplayed();
+//        new WebDriverWait(driver, Duration.ofSeconds(8))
+//                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//input[@value='" + text + "']")));
     }
-
-
 }
