@@ -14,6 +14,7 @@ abstract public class BaseTest {
 
     @Before
     public void setUp(){
+//        for testing in Chrome Browser
 //        WebDriverManager.chromedriver().driverVersion("119.0.6045.123").setup();
 //
 //        driver = new ChromeDriver();
@@ -24,14 +25,9 @@ abstract public class BaseTest {
 //        driver.get("https://stellarburgers.nomoreparties.site/");
 
 //         for testing in Yandex Browser
-//        WebDriverManager.chromedriver().driverVersion("src/main/resources/yandexdriver").setup();
-        System.setProperty("webdriver.chrome.driver", "/Applications/Yandex.app/Contents/MacOS/Yandex");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/yandexdriver");
         ChromeOptions options = new ChromeOptions();
-//        options.setBinary("");
         options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--no-sandbox"); // Bypass OS security model
-        options.addArguments("--disable-dev-shm-usage");// overcome limited resource problems
-//        options.addArguments("--headless");
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
