@@ -6,6 +6,7 @@ import api.model.courier.LoginCourierRequest;
 import api.model.courier.LoginCourierResponse;
 import api.model.courier.User;
 import core.BaseTest;
+import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.Test;
@@ -24,6 +25,9 @@ public class RegisterTest extends BaseTest {
     private final LoginPage loginPage = new LoginPage();
     private final RegisterPage registerPage = new RegisterPage();
     private final User user = getRandomUser();
+    private final String name = user.getName();
+    private final String email = user.getEmail();
+    private final String password = user.getPassword();
 
     @Test
     @DisplayName("Успешное создание курьера")
@@ -32,36 +36,20 @@ public class RegisterTest extends BaseTest {
 
         loginPage.clickRegistrationLink();
 
-        registerPage.setPassword(user.getPassword());
-        registerPage.setName(user.getName());
-        registerPage.setEmail(user.getEmail());
+        setRegistration(name, email, password);
 
-        registerPage.assertInputText(user.getName());
-        registerPage.assertInputText(user.getEmail());
+        registerPage.assertInputText(name);
+        registerPage.assertInputText(email);
 
         registerPage.clickRegisterButton();
 
         assertTrue(loginPage.enterButtonVisible());
 
-        loginPage.clickEnterTitle();
-
-        loginPage.setEmail(user.getEmail());
-        loginPage.setPassword(user.getPassword());
-        loginPage.clickEnterButton();
+        auth(email, password);
 
         assertTrue(mainPage.createOrderButtonVisible());
 
-        CourierApiClient courierApiClient = new CourierApiClient();
-        LoginCourierRequest loginCourierRequest = new LoginCourierRequest(user.getEmail(), user.getPassword());
-        Response loginResponse = courierApiClient.loginCourier(loginCourierRequest);
-        assertEquals(SC_OK, loginResponse.statusCode());
-
-        LoginCourierResponse loginCourierResponse = loginResponse.as(LoginCourierResponse.class);
-        String token = loginCourierResponse.getAccessToken();
-
-        DeleteCourierRequest deleteCourierRequest = new DeleteCourierRequest(user.getEmail(), user.getPassword());
-        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
-        assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
+        deleteAccount();
     }
 
     @Test
@@ -71,13 +59,39 @@ public class RegisterTest extends BaseTest {
 
         loginPage.clickRegistrationLink();
 
-        registerPage.setEmail(user.getEmail());
-        registerPage.setName(user.getName());
-        registerPage.setPassword(user.getPassword().substring(0, 4));
-
+        setRegistration(user.getName(), user.getEmail(), user.getPassword().substring(0, 4));
         registerPage.clickRegisterButton();
 
         assertEquals("Некорректный пароль", registerPage.getTextErrorWrongPassword());
     }
 
+    @Step("Ввод данных для регистрации")
+    private void setRegistration(String name, String email, String password) {
+        registerPage.setEmail(email);
+        registerPage.setName(name);
+        registerPage.setPassword(password);
+    }
+
+    @Step("Вход в личный кабинет")
+    private void auth(String email, String password) {
+        loginPage.clickEnterTitle();
+        loginPage.setEmail(email);
+        loginPage.setPassword(password);
+        loginPage.clickEnterButton();
+    }
+
+    @Step("Удалить аккаунт созданного курьера")
+    private void deleteAccount(){
+        CourierApiClient courierApiClient = new CourierApiClient();
+        LoginCourierRequest loginCourierRequest = new LoginCourierRequest(email, password);
+        Response loginResponse = courierApiClient.loginCourier(loginCourierRequest);
+        assertEquals(SC_OK, loginResponse.statusCode());
+
+        LoginCourierResponse loginCourierResponse = loginResponse.as(LoginCourierResponse.class);
+        String token = loginCourierResponse.getAccessToken();
+
+        DeleteCourierRequest deleteCourierRequest = new DeleteCourierRequest(email, password);
+        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
+        assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
+    }
 }

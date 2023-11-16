@@ -1,18 +1,13 @@
 package page;
 
 import core.BasePage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 public class RegisterPage extends BasePage {
     /**
-     *
      * /register
-     *
      */
     public RegisterPage(WebDriver driver) {
         BasePage.driver = driver;
@@ -26,40 +21,36 @@ public class RegisterPage extends BasePage {
     private final By passwordInput = By.xpath(".//*[text()='Пароль']/parent::div/input");
     private final By registerButton = By.xpath(".//*[text()='Зарегистрироваться']");
     private final By errorWrongPassword = By.xpath(".//p[text()='Некорректный пароль']");
-
+    @Step("Ввести в поле ввода имя '{name}'")
     public void setName(String name) {
         driver.findElement(nameInput).sendKeys(name);
     }
-
+    @Step("Ввести в поле ввода email '{email}'")
     public void setEmail(String email) {
         driver.findElement(emailInput).sendKeys(email);
     }
-
+    @Step("Ввести в поле ввода пароль '{password}'")
     public void setPassword(String password) {
         driver.findElement(passwordInput).sendKeys(password);
     }
 
+    @Step("Нажать кнопку 'Зарегестрироваться'")
     public void clickRegisterButton() {
-        waitRegisterButton();
+        registerButtonVisible();
         driver.findElement(registerButton).click();
     }
 
+    @Step("Получить текст ошибки подсказки")
     public String getTextErrorWrongPassword() {
         return driver.findElement(errorWrongPassword).getText();
     }
 
-
-    public boolean waitRegisterButton() {
-        // ждем 8 секунд, пока появится веб-элемент с нужным текстом
+    @Step("Кнопка 'Зарегистрироваться' видна")
+    public boolean registerButtonVisible() {
         return driver.findElement(registerButton).isDisplayed();
-//                WebDriverWait(driver, Duration.ofSeconds(8))
-//                .until(ExpectedConditions.visibilityOfElementLocated(registerButton));
     }
-
+    @Step("В поле ввода отображается '{text}'")
     public boolean assertInputText(String text) {
-        // ждем 8 секунд, пока появится веб-элемент с нужным текстом
-return driver.findElement(By.xpath(".//input[@value='" + text + "']")).isDisplayed();
-//        new WebDriverWait(driver, Duration.ofSeconds(8))
-//                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//input[@value='" + text + "']")));
+        return driver.findElement(By.xpath(".//input[@value='" + text + "']")).isDisplayed();
     }
 }

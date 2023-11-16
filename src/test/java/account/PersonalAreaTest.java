@@ -1,10 +1,9 @@
 package account;
 
 import api.client.CourierApiClient;
-import api.model.courier.CreateCourierRequest;
-import api.model.courier.CreateCourierResponse;
-import api.model.courier.DeleteCourierRequest;
+import api.model.courier.*;
 import core.BaseTest;
+import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.Test;
@@ -22,28 +21,18 @@ public class PersonalAreaTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();
     private final ProfilePage profilePage = new ProfilePage();
+    private final CreateCourierRequest createCourierRequest = getRandomCourier();
+    private final String email = createCourierRequest.getEmail();
+    private final String password = createCourierRequest.getPassword();
 
     @Test
     @DisplayName("Переход в личный кабинет")
     public void personalArea() {
-        CourierApiClient courierApiClient = new CourierApiClient();
-        CreateCourierRequest createCourierRequest = getRandomCourier();
-        Response createResponse = courierApiClient.createCourier(createCourierRequest);
-        assertEquals(SC_OK, createResponse.statusCode());
-        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
-        assertTrue(createCourierResponse.getSuccess());
-
-        String token = createCourierResponse.getAccessToken();
-        String email = createCourierRequest.getEmail();
-        String password = createCourierRequest.getPassword();
+        createCourier();
 
         mainPage.clickPersonalArea();
 
-        loginPage.clickEnterTitle();
-
-        loginPage.setEmail(email);
-        loginPage.setPassword(password);
-        loginPage.clickEnterButton();
+        auth(email, password);
 
         assertTrue(mainPage.createOrderButtonVisible());
 
@@ -68,8 +57,38 @@ public class PersonalAreaTest extends BaseTest {
 
         assertTrue(loginPage.enterTitleVisible());
 
+        deleteAccount(email, password);
+    }
+
+    @Step("Создание курьера")
+    public void createCourier() {
+        CourierApiClient courierApiClient = new CourierApiClient();
+        Response createResponse = courierApiClient.createCourier(createCourierRequest);
+        assertEquals(SC_OK, createResponse.statusCode());
+        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
+        assertTrue(createCourierResponse.getSuccess());
+    }
+
+    @Step("Удалить аккаунт созданного курьера")
+    private void deleteAccount(String email, String password) {
+        CourierApiClient courierApiClient = new CourierApiClient();
+        LoginCourierRequest loginCourierRequest = new LoginCourierRequest(email, password);
+        Response loginResponse = courierApiClient.loginCourier(loginCourierRequest);
+        assertEquals(SC_OK, loginResponse.statusCode());
+
+        LoginCourierResponse loginCourierResponse = loginResponse.as(LoginCourierResponse.class);
+        String token = loginCourierResponse.getAccessToken();
+
         DeleteCourierRequest deleteCourierRequest = new DeleteCourierRequest(email, password);
         Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
         assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
+    }
+
+    @Step("Вход в личный кабинет")
+    private void auth(String email, String password) {
+        loginPage.clickEnterTitle();
+        loginPage.setEmail(email);
+        loginPage.setPassword(password);
+        loginPage.clickEnterButton();
     }
 }

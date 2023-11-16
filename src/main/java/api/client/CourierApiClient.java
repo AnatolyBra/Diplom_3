@@ -3,7 +3,6 @@ package api.client;
 import api.model.courier.CreateCourierRequest;
 import api.model.courier.DeleteCourierRequest;
 import api.model.courier.LoginCourierRequest;
-import api.model.courier.UserResponse;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
