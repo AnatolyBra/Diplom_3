@@ -24,10 +24,10 @@ abstract public class BaseTest {
 //        driver.get("https://stellarburgers.nomoreparties.site/");
 
 //         for testing in Yandex Browser
-        WebDriverManager.chromedriver().driverVersion("src/main/resources/yandexdriver").setup();
-//        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
+//        WebDriverManager.chromedriver().driverVersion("src/main/resources/yandexdriver").setup();
+        System.setProperty("webdriver.chrome.driver", "/Applications/Yandex.app/Contents/MacOS/Yandex");
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("/Applications/Yandex.app/Contents/MacOS/Yandex");
+//        options.setBinary("");
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--no-sandbox"); // Bypass OS security model
         options.addArguments("--disable-dev-shm-usage");// overcome limited resource problems
