@@ -1,7 +1,7 @@
 package api.helper;
 
 import com.github.javafaker.Faker;
-import api.model.courier.User;
+import api.model.user.User;
 
 public class UserGenerator {
     public static User getRandomUser() {

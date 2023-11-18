@@ -22,6 +22,7 @@ public class ProfilePage extends BasePage {
     private final By constructorButton = By.xpath(".//*[text()='Конструктор']");
     private final By exitButton = By.xpath(".//*[text()='Выход']");
     private final By logoButton = By.xpath(".//*[contains(@class,'logo')]");
+
     @Step("Отображается текст 'Профиль'")
     public boolean profileLinkVisible(){
         return driver.findElement(profileLink).isDisplayed();

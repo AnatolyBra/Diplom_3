@@ -1,7 +1,10 @@
 package account;
 
-import api.client.CourierApiClient;
-import api.model.courier.*;
+import api.client.UserApiClient;
+import api.model.user.CreateUserResponse;
+import api.model.user.LoginUserRequest;
+import api.model.user.LoginUserResponse;
+import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
@@ -11,7 +14,7 @@ import page.LoginPage;
 import page.MainPage;
 import page.ProfilePage;
 
-import static api.helper.CourierGenerator.getRandomCourier;
+import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
@@ -21,14 +24,15 @@ public class PersonalAreaTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();
     private final ProfilePage profilePage = new ProfilePage();
-    private final CreateCourierRequest createCourierRequest = getRandomCourier();
-    private final String email = createCourierRequest.getEmail();
-    private final String password = createCourierRequest.getPassword();
+    private final User user = getRandomUser();
+    private final String email = user.getEmail();
+    private final String password = user.getPassword();
+    private final UserApiClient userApiClient = new UserApiClient();
 
     @Test
     @DisplayName("Переход в личный кабинет")
     public void personalArea() {
-        createCourier();
+        createUser();
 
         mainPage.clickPersonalArea();
 
@@ -61,26 +65,23 @@ public class PersonalAreaTest extends BaseTest {
     }
 
     @Step("Создание курьера")
-    public void createCourier() {
-        CourierApiClient courierApiClient = new CourierApiClient();
-        Response createResponse = courierApiClient.createCourier(createCourierRequest);
+    public void createUser() {
+        Response createResponse = userApiClient.createUser(user);
         assertEquals(SC_OK, createResponse.statusCode());
-        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
-        assertTrue(createCourierResponse.getSuccess());
+        CreateUserResponse createUserResponse = createResponse.as(CreateUserResponse.class);
+        assertTrue(createUserResponse.getSuccess());
     }
 
     @Step("Удалить аккаунт созданного курьера")
     private void deleteAccount(String email, String password) {
-        CourierApiClient courierApiClient = new CourierApiClient();
-        LoginCourierRequest loginCourierRequest = new LoginCourierRequest(email, password);
-        Response loginResponse = courierApiClient.loginCourier(loginCourierRequest);
+        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
+        Response loginResponse = userApiClient.loginUser(loginUserRequest);
         assertEquals(SC_OK, loginResponse.statusCode());
 
-        LoginCourierResponse loginCourierResponse = loginResponse.as(LoginCourierResponse.class);
-        String token = loginCourierResponse.getAccessToken();
+        LoginUserResponse loginUserResponse = loginResponse.as(LoginUserResponse.class);
+        String token = loginUserResponse.getAccessToken();
 
-        DeleteCourierRequest deleteCourierRequest = new DeleteCourierRequest(email, password);
-        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
+        Response deleteResponse = userApiClient.deleteUser(token);
         assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
     }
 

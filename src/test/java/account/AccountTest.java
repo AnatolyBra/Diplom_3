@@ -1,10 +1,10 @@
 package account;
 
-import api.client.CourierApiClient;
-import api.model.courier.CreateCourierRequest;
-import api.model.courier.CreateCourierResponse;
-import api.model.courier.DeleteCourierRequest;
-import api.model.courier.DeleteCourierResponse;
+import api.client.UserApiClient;
+import api.model.user.CreateUserRequest;
+import api.model.user.CreateUserResponse;
+import api.model.user.DeleteUserResponse;
+import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
@@ -15,7 +15,9 @@ import org.openqa.selenium.By;
 import page.LoginPage;
 import page.MainPage;
 
+import static api.config.ConfigApp.*;
 import static api.helper.CourierGenerator.getRandomCourier;
+import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
@@ -28,8 +30,7 @@ public class AccountTest extends BaseTest {
     private final String url;
     private final String button;
 
-    private DeleteCourierRequest deleteCourierRequest;
-    private CourierApiClient courierApiClient;
+    private UserApiClient userApiClient;
     private String token;
     private String email;
     private String password;
@@ -42,25 +43,25 @@ public class AccountTest extends BaseTest {
     @Parameterized.Parameters
     public static Object[][] getEnterAccount() {
         return new Object[][]{
-                {"https://stellarburgers.nomoreparties.site/", "Личный Кабинет"},
-                {"https://stellarburgers.nomoreparties.site/", "Войти в аккаунт"},
-                {"https://stellarburgers.nomoreparties.site/register", "Войти"},
-                {"https://stellarburgers.nomoreparties.site/forgot-password", "Войти"}
+                {BASE_URL, "Личный Кабинет"},
+                {BASE_URL, "Войти в аккаунт"},
+                {BASE_URL_REGISTER, "Войти"},
+                {BASE_URL_FORGOT_PASSWORD, "Войти"}
         };
     }
 
     @Test
-    @DisplayName("Тестируем авторизацию")
+    @DisplayName("Тестируем точки входа в аккаунт")
     public void accountAnyCheck() {
-        courierApiClient = new CourierApiClient();
-        CreateCourierRequest createCourierRequest = getRandomCourier();
-        Response createResponse = courierApiClient.createCourier(createCourierRequest);
+        userApiClient = new UserApiClient();
+        User createUserRequest = getRandomUser();
+        Response createResponse = userApiClient.createUser(createUserRequest);
         assertEquals(SC_OK, createResponse.statusCode());
-        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
-        assertTrue(createCourierResponse.getSuccess());
-        token = createCourierResponse.getAccessToken();
-        email = createCourierRequest.getEmail();
-        password = createCourierRequest.getPassword();
+        CreateUserResponse createUserResponse = createResponse.as(CreateUserResponse.class);
+        assertTrue(createUserResponse.getSuccess());
+        token = createUserResponse.getAccessToken();
+        email = createUserRequest.getEmail();
+        password = createUserRequest.getPassword();
 
         driver.get(url);
 
@@ -76,11 +77,10 @@ public class AccountTest extends BaseTest {
 
         assertTrue(mainPage.createOrderButtonVisible());
 
-        deleteCourierRequest = new DeleteCourierRequest(email, password);
-        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
+        Response deleteResponse = userApiClient.deleteUser(token);
         assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
-        DeleteCourierResponse deleteCourierResponse = deleteResponse.as(DeleteCourierResponse.class);
-        assertTrue(deleteCourierResponse.getSuccess());
+        DeleteUserResponse deleteUserResponse = deleteResponse.as(DeleteUserResponse.class);
+        assertTrue(deleteUserResponse.getSuccess());
     }
 
 }

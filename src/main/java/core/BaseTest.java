@@ -9,35 +9,46 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.concurrent.TimeUnit;
 
+import static api.config.ConfigApp.*;
+
 abstract public class BaseTest {
     protected WebDriver driver;
 
     @Before
-    public void setUp(){
-//        for testing in Chrome Browser
-//        WebDriverManager.chromedriver().driverVersion("119.0.6045.123").setup();
-//
-//        driver = new ChromeDriver();
-//        driver.manage().window().maximize();
-//        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-//        driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
-//        BasePage.setDriver(driver);
-//        driver.get("https://stellarburgers.nomoreparties.site/");
+    public void setUp() {
+        String browserName = System.getProperty("browserName");
 
-//         for testing in Yandex Browser
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/yandexdriver");
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
-        BasePage.setDriver(driver);
-        driver.get("https://stellarburgers.nomoreparties.site/");
+        switch (browserName) {
+            case "chrome":
+                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
+
+                driver = new ChromeDriver();
+                driver.manage().window().maximize();
+                driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+                driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+                BasePage.setDriver(driver);
+                driver.get(BASE_URL);
+
+                break;
+            case "yandex":
+                System.setProperty("webdriver.chrome.driver", YANDEX_DRIVER_PATH);
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--remote-allow-origins=*");
+                driver = new ChromeDriver(options);
+                driver.manage().window().maximize();
+                driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+                driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+                BasePage.setDriver(driver);
+                driver.get(BASE_URL);
+
+                break;
+            default:
+                throw new RuntimeException("Browser is not detected");
+        }
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         driver.close();
         driver.quit();
     }

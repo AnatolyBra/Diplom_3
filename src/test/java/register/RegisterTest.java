@@ -1,10 +1,9 @@
 package register;
 
-import api.client.CourierApiClient;
-import api.model.courier.DeleteCourierRequest;
-import api.model.courier.LoginCourierRequest;
-import api.model.courier.LoginCourierResponse;
-import api.model.courier.User;
+import api.client.UserApiClient;
+import api.model.user.LoginUserRequest;
+import api.model.user.LoginUserResponse;
+import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
@@ -81,17 +80,16 @@ public class RegisterTest extends BaseTest {
     }
 
     @Step("Удалить аккаунт созданного курьера")
-    private void deleteAccount(){
-        CourierApiClient courierApiClient = new CourierApiClient();
-        LoginCourierRequest loginCourierRequest = new LoginCourierRequest(email, password);
-        Response loginResponse = courierApiClient.loginCourier(loginCourierRequest);
+    private void deleteAccount() {
+        UserApiClient userApiClient = new UserApiClient();
+        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
+        Response loginResponse = userApiClient.loginUser(loginUserRequest);
         assertEquals(SC_OK, loginResponse.statusCode());
 
-        LoginCourierResponse loginCourierResponse = loginResponse.as(LoginCourierResponse.class);
-        String token = loginCourierResponse.getAccessToken();
+        LoginUserResponse loginUserResponse = loginResponse.as(LoginUserResponse.class);
+        String token = loginUserResponse.getAccessToken();
 
-        DeleteCourierRequest deleteCourierRequest = new DeleteCourierRequest(email, password);
-        Response deleteResponse = courierApiClient.deleteCourier(deleteCourierRequest, token);
+        Response deleteResponse = userApiClient.deleteUser(token);
         assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
     }
 }

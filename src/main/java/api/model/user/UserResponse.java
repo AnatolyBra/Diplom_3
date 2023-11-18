@@ -1,4 +1,4 @@
-package api.model.courier;
+package api.model.user;
 
 public class UserResponse {
     private String email;
