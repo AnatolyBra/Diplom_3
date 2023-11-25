@@ -5,7 +5,6 @@ import api.model.user.LoginUserRequest;
 import api.model.user.LoginUserResponse;
 import api.model.user.User;
 import core.BaseTest;
-import groovy.util.logging.Slf4j;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
@@ -19,7 +18,7 @@ import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-@Slf4j
+
 public class RegisterTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();

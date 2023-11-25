@@ -1,7 +1,6 @@
 package core;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +15,7 @@ abstract public class BaseTest {
 
     @Before
     public void setUp() {
+        System.out.println("setUp старт");
 //        String browserName = System.getProperty("browserName");
         String browserName = "chrome";
 
