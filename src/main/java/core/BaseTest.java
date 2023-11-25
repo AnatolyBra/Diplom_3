@@ -1,6 +1,7 @@
 package core;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.concurrent.TimeUnit;
 
 import static api.config.ConfigApp.*;
-
 abstract public class BaseTest {
     protected WebDriver driver;
 
@@ -24,6 +24,7 @@ abstract public class BaseTest {
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
                 driver = new ChromeDriver();
+                System.out.println(driver + " версия драйвера ");
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
