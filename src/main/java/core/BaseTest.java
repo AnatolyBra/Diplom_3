@@ -23,7 +23,7 @@ abstract public class BaseTest {
             case "chrome":
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
-                driver = new ChromeDriver();
+                driver = WebDriverManager.getInstance(ChromeDriver.class).create();
                 System.out.println(driver + " версия драйвера ");
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
