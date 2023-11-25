@@ -16,7 +16,8 @@ abstract public class BaseTest {
 
     @Before
     public void setUp() {
-        String browserName = System.getProperty("browserName");
+//        String browserName = System.getProperty("browserName");
+        String browserName = "chrome";
 
         switch (browserName) {
             case "chrome":
