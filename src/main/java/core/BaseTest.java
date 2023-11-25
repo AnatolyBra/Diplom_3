@@ -10,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.concurrent.TimeUnit;
 
 import static api.config.ConfigApp.*;
+
 abstract public class BaseTest {
     protected WebDriver driver;
 
@@ -23,7 +24,8 @@ abstract public class BaseTest {
             case "chrome":
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
-                driver = WebDriverManager.getInstance(ChromeDriver.class).create();
+                driver = WebDriverManager.chromedriver().browserInDocker()
+                        .enableVnc().create();
                 System.out.println(driver + " версия драйвера ");
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
