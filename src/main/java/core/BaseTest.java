@@ -28,9 +28,10 @@ abstract public class BaseTest {
         switch (browserName) {
             case "chrome":
 //                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
-                WebDriverManager.firefoxdriver().browserInDocker().setup();
+//                WebDriverManager.firefoxdriver().browserInDocker().setup();
+                WebDriverManager.chromedriver().browserInDocker().setup();
 
-                FirefoxOptions options = new FirefoxOptions();
+                ChromeOptions options = new ChromeOptions();
 
                 options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
 
