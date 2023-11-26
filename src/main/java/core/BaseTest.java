@@ -28,7 +28,8 @@ abstract public class BaseTest {
         switch (browserName) {
             case "chrome":
 //                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
-                WebDriverManager.firefoxdriver().setup();
+                WebDriverManager.firefoxdriver().browserInDocker().setup();
+
                 FirefoxOptions options = new FirefoxOptions();
 
                 driver = new RemoteWebDriver( new URL("http://selenium-hub:4444/"), options);
