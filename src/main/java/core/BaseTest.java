@@ -31,7 +31,7 @@ abstract public class BaseTest {
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions options = new FirefoxOptions();
 
-                driver = new RemoteWebDriver( new URL("http://localhost:4444/"), options);
+                driver = new RemoteWebDriver( new URL("http://selenium-hub:4444/"), options);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
