@@ -27,9 +27,9 @@ abstract public class BaseTest {
 
         switch (browserName) {
             case "chrome":
-//                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
+                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 //                WebDriverManager.firefoxdriver().browserInDocker().setup();
-                WebDriverManager.chromedriver().browserInDocker().setup();
+//                WebDriverManager.chromedriver().browserInDocker().setup();
 
                 ChromeOptions options = new ChromeOptions();
 
