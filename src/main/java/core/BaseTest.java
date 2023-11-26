@@ -7,7 +7,10 @@ import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static api.config.ConfigApp.*;
@@ -17,7 +20,7 @@ abstract public class BaseTest {
     WebDriverManager wdm = WebDriverManager.chromedriver().browserInDocker()
             .enableVnc();
     @Before
-    public void setUp() {
+    public void setUp()  throws Exception{
 //        String browserName = System.getProperty("browserName");
         String browserName = "chrome";
 
@@ -26,7 +29,9 @@ abstract public class BaseTest {
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
 //                driver = new ChromeDriver();
-                driver = wdm.create();
+                ChromeOptions options = new ChromeOptions();
+
+                driver = new RemoteWebDriver( new URL("http://localhost:4444"), options);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
@@ -35,9 +40,9 @@ abstract public class BaseTest {
                 break;
             case "yandex":
                 System.setProperty("webdriver.chrome.driver", YANDEX_DRIVER_PATH);
-                ChromeOptions options = new ChromeOptions();
-                options.addArguments("--remote-allow-origins=*");
-                driver = new ChromeDriver(options);
+                ChromeOptions options1 = new ChromeOptions();
+                options1.addArguments("--remote-allow-origins=*");
+                driver = new ChromeDriver(options1);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
