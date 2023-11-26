@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -17,8 +19,7 @@ import static api.config.ConfigApp.*;
 @Slf4j
 abstract public class BaseTest {
     protected WebDriver driver;
-    WebDriverManager wdm = WebDriverManager.chromedriver().browserInDocker()
-            .enableVnc();
+
     @Before
     public void setUp()  throws Exception{
 //        String browserName = System.getProperty("browserName");
@@ -26,12 +27,11 @@ abstract public class BaseTest {
 
         switch (browserName) {
             case "chrome":
-                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
+//                WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
+                WebDriverManager.firefoxdriver().setup();
+                FirefoxOptions options = new FirefoxOptions();
 
-//                driver = new ChromeDriver();
-                ChromeOptions options = new ChromeOptions();
-
-                driver = new RemoteWebDriver( new URL("http://localhost:4444"), options);
+                driver = new RemoteWebDriver( new URL("http://localhost:4444/"), options);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
@@ -59,6 +59,5 @@ abstract public class BaseTest {
     public void tearDown() {
         driver.close();
         driver.quit();
-        wdm.quit();
     }
 }
