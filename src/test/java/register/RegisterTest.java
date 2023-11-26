@@ -8,6 +8,7 @@ import core.BaseTest;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import page.LoginPage;
 import page.MainPage;

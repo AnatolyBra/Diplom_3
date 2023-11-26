@@ -1,27 +1,37 @@
 package core;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.extern.log4j.Log4j2;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static api.config.ConfigApp.*;
-
+//@Log4j2
 abstract public class BaseTest {
     protected WebDriver driver;
 
     @Before
-    public void setUp() {
+    public void setUp() throws MalformedURLException {
         System.out.println("setUp старт");
 //        String browserName = System.getProperty("browserName");
-        String browserName = "chrome";
+        String browserName = "yandex";
 
         switch (browserName) {
             case "chrome":
+                new DesiredCapabilities();
+                URL serverurl = new URL("http://localhost:8081/");
+//                DesiredCapabilities capabilities = DesiredCapabilities.class;
+//                 driver = new RemoteWebDriver(serverurl,this.createCapabilities());
+
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
                 driver = WebDriverManager.chromedriver().browserInDocker()
