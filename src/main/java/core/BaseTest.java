@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -20,23 +19,23 @@ abstract public class BaseTest {
     protected WebDriver driver;
 
     @Before
-    public void setUp() throws MalformedURLException {
+    public void setUp() throws Exception{
         System.out.println("setUp старт");
 //        String browserName = System.getProperty("browserName");
-        String browserName = "yandex";
+        String browserName = "chrome";
 
         switch (browserName) {
             case "chrome":
                 new DesiredCapabilities();
                 URL serverurl = new URL("http://localhost:8081/");
-//                DesiredCapabilities capabilities = DesiredCapabilities.class;
-//                 driver = new RemoteWebDriver(serverurl,this.createCapabilities());
+
 
                 WebDriverManager.chromedriver().driverVersion(CHROME_DRIVER).setup();
 
-                driver = WebDriverManager.chromedriver().browserInDocker()
-                        .enableVnc().create();
-                System.out.println(driver + " версия драйвера ");
+
+                ChromeOptions options1 = new ChromeOptions();
+                driver = new RemoteWebDriver(serverurl, options1);
+
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
