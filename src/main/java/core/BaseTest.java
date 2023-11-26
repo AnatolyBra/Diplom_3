@@ -32,6 +32,8 @@ abstract public class BaseTest {
 
                 FirefoxOptions options = new FirefoxOptions();
 
+                options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+
                 driver = new RemoteWebDriver( new URL("http://selenium-hub:4444/"), options);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
