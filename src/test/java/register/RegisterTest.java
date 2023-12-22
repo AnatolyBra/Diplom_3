@@ -6,7 +6,6 @@ import api.model.user.LoginUserResponse;
 import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.Step;
-
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,8 @@ import page.RegisterPage;
 import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegisterTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
@@ -43,11 +42,11 @@ public class RegisterTest extends BaseTest {
 
         registerPage.clickRegisterButton();
 
-        assertTrue(loginPage.enterButtonVisible());
+        assertThat(loginPage.enterButtonVisible()).isTrue();
 
         auth(email, password);
 
-        assertTrue(mainPage.createOrderButtonVisible());
+        assertThat(mainPage.createOrderButtonVisible()).isTrue();
 
         deleteAccount();
     }
@@ -61,8 +60,7 @@ public class RegisterTest extends BaseTest {
 
         setRegistration(user.getName(), user.getEmail(), user.getPassword().substring(0, 4));
         registerPage.clickRegisterButton();
-
-        assertEquals("Некорректный пароль", registerPage.getTextErrorWrongPassword());
+        assertThat(registerPage.getTextErrorWrongPassword()).isEqualTo("Некорректный пароль");
     }
 
     @Step("Ввод данных для регистрации")
@@ -85,12 +83,12 @@ public class RegisterTest extends BaseTest {
         UserApiClient userApiClient = new UserApiClient();
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         Response loginResponse = userApiClient.loginUser(loginUserRequest);
-        assertEquals(SC_OK, loginResponse.statusCode());
+        assertThat(loginResponse.statusCode()).isEqualTo(SC_OK);
 
         LoginUserResponse loginUserResponse = loginResponse.as(LoginUserResponse.class);
         String token = loginUserResponse.getAccessToken();
 
         Response deleteResponse = userApiClient.deleteUser(token);
-        assertEquals(SC_ACCEPTED, deleteResponse.statusCode());
+        assertThat(deleteResponse.statusCode()).isEqualTo(SC_ACCEPTED);
     }
 }
