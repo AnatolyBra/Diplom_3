@@ -1,14 +1,13 @@
 package account;
 
 import api.client.UserApiClient;
-import api.model.user.CreateUserRequest;
 import api.model.user.CreateUserResponse;
 import api.model.user.DeleteUserResponse;
 import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
@@ -16,7 +15,6 @@ import page.LoginPage;
 import page.MainPage;
 
 import static api.config.ConfigApp.*;
-import static api.helper.CourierGenerator.getRandomCourier;
 import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
