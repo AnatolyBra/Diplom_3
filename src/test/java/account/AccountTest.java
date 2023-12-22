@@ -1,67 +1,56 @@
 package account;
 
 import api.client.UserApiClient;
-import api.model.user.CreateUserRequest;
 import api.model.user.CreateUserResponse;
 import api.model.user.DeleteUserResponse;
 import api.model.user.User;
 import core.BaseTest;
-import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import page.LoginPage;
 import page.MainPage;
 
+import java.util.stream.Stream;
+
 import static api.config.ConfigApp.*;
-import static api.helper.CourierGenerator.getRandomCourier;
 import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class AccountTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();
-    private final String url;
-    private final String button;
 
-    private UserApiClient userApiClient;
-    private String token;
-    private String email;
-    private String password;
 
-    public AccountTest(String url, String button) {
-        this.url = url;
-        this.button = button;
+    public static Stream<Arguments> getEnterAccount() {
+        return Stream.of(
+                arguments(BASE_URL, "Личный Кабинет"),
+                arguments(BASE_URL, "Войти в аккаунт"),
+                arguments(BASE_URL_REGISTER, "Войти"),
+                arguments(BASE_URL_FORGOT_PASSWORD, "Войти")
+        );
     }
 
-    @Parameterized.Parameters
-    public static Object[][] getEnterAccount() {
-        return new Object[][]{
-                {BASE_URL, "Личный Кабинет"},
-                {BASE_URL, "Войти в аккаунт"},
-                {BASE_URL_REGISTER, "Войти"},
-                {BASE_URL_FORGOT_PASSWORD, "Войти"}
-        };
-    }
-
-    @Test
+    @ParameterizedTest
+    @MethodSource("getEnterAccount")
     @DisplayName("Тестируем точки входа в аккаунт")
-    public void accountAnyCheck() {
-        userApiClient = new UserApiClient();
+    public void accountAnyCheck(String url, String button) {
+        UserApiClient userApiClient = new UserApiClient();
         User createUserRequest = getRandomUser();
         Response createResponse = userApiClient.createUser(createUserRequest);
         assertEquals(SC_OK, createResponse.statusCode());
         CreateUserResponse createUserResponse = createResponse.as(CreateUserResponse.class);
         assertTrue(createUserResponse.getSuccess());
-        token = createUserResponse.getAccessToken();
-        email = createUserRequest.getEmail();
-        password = createUserRequest.getPassword();
+        String token = createUserResponse.getAccessToken();
+        String email = createUserRequest.getEmail();
+        String password = createUserRequest.getPassword();
 
         driver.get(url);
 

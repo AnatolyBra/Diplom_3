@@ -6,10 +6,10 @@ import api.model.user.LoginUserResponse;
 import api.model.user.User;
 import core.BaseTest;
 import io.qameta.allure.Step;
-import io.qameta.allure.junit4.DisplayName;
+
 import io.restassured.response.Response;
-import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import page.LoginPage;
 import page.MainPage;
 import page.RegisterPage;
@@ -17,8 +17,8 @@ import page.RegisterPage;
 import static api.helper.UserGenerator.getRandomUser;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegisterTest extends BaseTest {
     private final MainPage mainPage = new MainPage();

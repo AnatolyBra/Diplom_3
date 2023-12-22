@@ -2,35 +2,30 @@ package main;
 
 import core.BaseTest;
 import io.qameta.allure.Step;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import page.MainPage;
 
-import static org.junit.Assert.assertTrue;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 public class MainTest extends BaseTest {
     private final MainPage mainPage = new MainPage();
-    private final String ingredient;
-    private final String ingredientToScroll;
 
-    public MainTest(String ingredient, String ingredientToScroll) {
-        this.ingredient = ingredient;
-        this.ingredientToScroll = ingredientToScroll;
+    public static Stream<Arguments> clickAndCheck() {
+        return Stream.of(
+                arguments("Начинки", "Булки"),
+                arguments("Соусы", "Начинки"),
+                arguments("Булки", "Начинки")
+        );
     }
 
-    @Parameterized.Parameters
-    public static Object[][] clickAndCheck() {
-        return new Object[][]{
-                {"Начинки", "Булки"},
-                {"Соусы", "Начинки"},
-                {"Булки", "Начинки"}
-        };
-    }
-
-    @Test
-    public void chooseMenu() {
+    @ParameterizedTest
+    @MethodSource("clickAndCheck")
+    public void chooseMenu(String ingredient, String ingredientToScroll) {
         mainPage.personalAreaVisible();
         mainPage.scrollToDown(ingredientToScroll);
 
@@ -40,12 +35,12 @@ public class MainTest extends BaseTest {
     }
 
     @Step("Кликнуть на кнопку ингредиента '{ingredient}'")
-    public void clickIngredient(String ingredient){
+    public void clickIngredient(String ingredient) {
         mainPage.clickIngredientButton(ingredient);
     }
 
     @Step("Проверить что ингредиент '{ingredient}' отображается в меню")
-    public void assertIngredientVisible(String ingredient){
+    public void assertIngredientVisible(String ingredient) {
         assertTrue(mainPage.ingredientVisible(ingredient));
     }
 }
