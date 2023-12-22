@@ -13,6 +13,9 @@
         <maven.compiler.target>11</maven.compiler.target>
         <aspectj.version>1.9.7</aspectj.version>
         <allure.version>2.15.0</allure.version>
+        <junit.jupiter.version>5.9.2</junit.jupiter.version>
+        <junit.jupiter.platform>1.9.2</junit.jupiter.platform>
+        <allure.maven.plugin.version>2.9</allure.maven.plugin.version>
         <allure.results.directory>${project.basedir}/target/allure-results</allure.results.directory>
         <allure.report.directory>${project.basedir}/target/allure-report</allure.report.directory>
     </properties>
@@ -77,17 +80,17 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.2</version>
+            <version>${junit.jupiter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.9.2</version>
+            <version>${junit.jupiter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
-            <version>1.9.2</version>
+            <version>${junit.jupiter.platform}</version>
         </dependency>
     </dependencies>
     <build>
@@ -134,7 +137,7 @@
                 <plugin>
                     <groupId>io.qameta.allure</groupId>
                     <artifactId>allure-maven</artifactId>
-                    <version>2.9</version>
+                    <version>${allure.maven.plugin.version}</version>
                     <configuration>
                         <reportVersion>${allure.version}</reportVersion>
                         <resultsDirectory>${allure.results.directory}</resultsDirectory>
